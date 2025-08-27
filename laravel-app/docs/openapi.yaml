@@ -1,0 +1,99 @@
+openapi: 3.0.3
+info:
+  title: Backend Labs 6 API
+  version: "1.0.0"
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/ping:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+  /api/products:
+    get:
+      summary: List products (ProductsApiViewer or Writer)
+      security:
+        - keycloakOAuth: [ "openid" ]
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: Create product (ProductsApiWriter)
+      security:
+        - keycloakOAuth: [ "openid" ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                price: { type: number }
+      responses:
+        "201":
+          description: Created
+  /api/products/{id}:
+    get:
+      summary: Show product by id (ProductsApiViewer or Writer)
+      security:
+        - keycloakOAuth: [ "openid" ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+    put:
+      summary: Update product (ProductsApiWriter)
+      security:
+        - keycloakOAuth: [ "openid" ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                price: { type: number }
+      responses:
+        "200":
+          description: Updated
+    delete:
+      summary: Delete product (ProductsApiWriter)
+      security:
+        - keycloakOAuth: [ "openid" ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Deleted
+components:
+  securitySchemes:
+    keycloakOAuth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: http://localhost:8080/realms/lab-realm/protocol/openid-connect/auth
+          tokenUrl: http://localhost:8080/realms/lab-realm/protocol/openid-connect/token
+          scopes:
+            openid: OpenID scope
+            profile: Basic profile
+            email: Email
+        clientCredentials:
+          tokenUrl: http://localhost:8080/realms/lab-realm/protocol/openid-connect/token
+          scopes:
+            openid: Machine-to-machine

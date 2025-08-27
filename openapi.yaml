@@ -1,0 +1,47 @@
+openapi: 3.0.3
+info:
+  title: Products API
+  version: 1.0.0
+  description: |
+    OpenAPI документація для Products API з авторизацією через Keycloak.
+    Підтримуються два потоки:
+      - Authorization Code (користувач логіниться через Keycloak)
+      - Client Credentials (сервіс отримує токен напряму)
+
+servers:
+  - url: http://localhost:8000/api
+    description: Local API server
+
+paths:
+  /products:
+    get:
+      summary: Отримати список продуктів
+      security:
+        - keycloakAuth: [ProductsApiViewer]
+      responses:
+        '200':
+          description: Список продуктів
+    post:
+      summary: Додати новий продукт
+      security:
+        - keycloakAuth: [ProductsApiWriter]
+      responses:
+        '201':
+          description: Продукт створено
+
+components:
+  securitySchemes:
+    keycloakAuth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: http://localhost:8080/realms/lab-realm/protocol/openid-connect/auth
+          tokenUrl: http://localhost:8080/realms/lab-realm/protocol/openid-connect/token
+          scopes:
+            ProductsApiViewer: Read products
+            ProductsApiWriter: Write products
+        clientCredentials:
+          tokenUrl: http://localhost:8080/realms/lab-realm/protocol/openid-connect/token
+          scopes:
+            ProductsApiViewer: Read products
+            ProductsApiWriter: Write products

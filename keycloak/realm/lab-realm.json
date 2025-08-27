@@ -1,0 +1,87 @@
+{
+  "realm": "lab-realm",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "subscriber-app",
+      "name": "subscriber-app",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": false,
+      "redirectUris": [
+        "http://localhost:8000/*",
+        "https://oauth.pstmn.io/*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "profile",
+        "roles",
+        "email"
+      ],
+      "fullScopeAllowed": true
+    }
+  ],
+  "clientScopes": [],
+  "roles": {
+    "realm": [],
+    "client": {
+      "subscriber-app": [
+        {
+          "name": "ProductsApiViewer",
+          "description": "Read products"
+        },
+        {
+          "name": "ProductsApiWriter",
+          "description": "Write products"
+        }
+      ]
+    }
+  },
+  "users": [
+    {
+      "username": "viewer",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "viewer",
+          "temporary": false
+        }
+      ],
+      "clientRoles": {
+        "subscriber-app": [
+          "ProductsApiViewer"
+        ]
+      }
+    },
+    {
+      "username": "writer",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "writer",
+          "temporary": false
+        }
+      ],
+      "clientRoles": {
+        "subscriber-app": [
+          "ProductsApiWriter",
+          "ProductsApiViewer"
+        ]
+      }
+    }
+  ]
+}
